@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  caddy:
+    build: 
+      context: .
+    container_name: caddy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /some/directory:/data
+      - /some/other/directory:/config
+    ports:
+      #external:internal
+      - 80:80
+      - 443:443
+    environment:
+      CADDY_INGRESS_NETWORKS: caddy
+      DOMAIN: "${DOMAIN_NAME}"
+      EMAIL: "${CADDY_AUTH_EMAIL}"
+      LOG_FILE_ROOT: "/data/logs/"
+      CLOUDFLARE_API_TOKEN: "${CLOUDFLARE_API_TOKEN}"
+    networks:
+      - caddy
+    restart: unless-stopped
+
+networks:
+  caddy:
+    external: true
+
